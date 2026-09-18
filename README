@@ -1,3 +1,55 @@
+================================================================================
+THIS BRANCH: vde-2 with a working vde_router
+================================================================================
+
+You are looking at a fork.  This branch is upstream vde-2 plus eleven commits
+that make vde_router usable.  Everything else is untouched.
+
+Why it exists: as shipped, vde_router does not forward packets at all.  The
+forwarding path rebuilds the IP header of every routed datagram, so the sender's
+address is replaced by the router's own while the TCP/UDP checksum still covers
+the original one, and nothing comes back.  Separately, it answers every ARP
+request on the wire with its own MAC, which is enough to disturb any segment you
+attach it to: unused addresses appear reachable and duplicate address detection
+always reports a conflict, so a guest that probes at boot - Windows 98, DOS,
+Mac OS - can decide its address is taken.
+
+What is fixed, one commit each:
+
+   1  reject frames shorter than the header they claim (heap over-read)
+   2  preserve the IP header of forwarded packets
+   3  set the queue priority on the ARP reply that is sent
+   4  do not learn ARP entries from probes, and stop leaking them
+   5  only answer ARP for local or proxied addresses
+   6  free forwarded packets that could not be sent
+   7  do not claim host unreachable while ARP is pending
+   8  avoid signed shift overflow in is_netmask
+   9  make -m accept its argument (it dereferenced NULL)
+  10  rewrite the manual page, which had an empty DESCRIPTION
+  11  add doc/vde_router-HOWTO
+
+How it was checked: an end-to-end suite over two topologies (DHCP, ARP, DNS,
+ICMP, TCP and UDP through NAT), an Alpine guest routing through it for
+'apk update' and HTTPS, and an ASan/UBSan/LeakSanitizer build under load.  The
+same suite was run against the unpatched build to confirm it fails there.
+
+Upstream review is pending, not declined:
+
+  https://github.com/virtualsquare/vde-2/pull/74   the fixes and the man page
+  https://github.com/virtualsquare/vde-2/pull/75   the HOWTO
+
+If those land, this branch goes away and you should use upstream.  Until then
+this is here so the work is usable rather than sitting in a patch file.  The
+patches apply to upstream master with 'git am' if you would rather carry them
+yourself.
+
+The branches fix/vde_router-forwarding-and-arp and doc/vde_router-howto hold
+the same commits without this notice; those are what the pull requests point at.
+
+Build and use: see doc/vde_router-HOWTO, and vde_router(1).
+
+================================================================================
+
 VDEv2: Virtual Distributed Ethernet.
 
 (c) 2003/2004/2005/2006 Renzo Davoli
