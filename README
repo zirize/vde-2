@@ -2,7 +2,7 @@
 THIS BRANCH: vde-2 with a working vde_router
 ================================================================================
 
-You are looking at a fork.  This branch is upstream vde-2 plus eleven commits
+You are looking at a fork.  This branch is upstream vde-2 plus twelve commits
 that make vde_router usable.  Everything else is untouched.
 
 Why it exists: as shipped, vde_router does not forward packets at all.  The
@@ -27,6 +27,7 @@ What is fixed, one commit each:
    9  make -m accept its argument (it dereferenced NULL)
   10  rewrite the manual page, which had an empty DESCRIPTION
   11  add doc/vde_router-HOWTO
+  12  let dhcpd say which DNS server to offer (the address was a constant)
 
 How it was checked: an end-to-end suite over two topologies (DHCP, ARP, DNS,
 ICMP, TCP and UDP through NAT), an Alpine guest routing through it for
@@ -44,7 +45,8 @@ patches apply to upstream master with 'git am' if you would rather carry them
 yourself.
 
 The branches fix/vde_router-forwarding-and-arp and doc/vde_router-howto hold
-the same commits without this notice; those are what the pull requests point at.
+commits 1 to 11 without this notice; those are what the pull requests point at.
+Commit 12 came later and is not in a pull request yet.
 
 Build and use: see doc/vde_router-HOWTO, and vde_router(1).
 
