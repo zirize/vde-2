@@ -2,8 +2,9 @@
 THIS BRANCH: vde-2 with a working vde_router
 ================================================================================
 
-You are looking at a fork.  This branch is upstream vde-2 plus twelve commits
-that make vde_router usable.  Everything else is untouched.
+You are looking at a fork.  This branch is upstream vde-2 plus the two
+vde_router commits that upstream does not have yet.  Everything else is
+untouched.
 
 Why it exists: as shipped, vde_router does not forward packets at all.  The
 forwarding path rebuilds the IP header of every routed datagram, so the sender's
@@ -14,7 +15,7 @@ attach it to: unused addresses appear reachable and duplicate address detection
 always reports a conflict, so a guest that probes at boot - Windows 98, DOS,
 Mac OS - can decide its address is taken.
 
-What is fixed, one commit each:
+What was fixed, one commit each (1 to 10 are now in upstream master):
 
    1  reject frames shorter than the header they claim (heap over-read)
    2  preserve the IP header of forwarded packets
@@ -34,19 +35,19 @@ ICMP, TCP and UDP through NAT), an Alpine guest routing through it for
 'apk update' and HTTPS, and an ASan/UBSan/LeakSanitizer build under load.  The
 same suite was run against the unpatched build to confirm it fails there.
 
-Upstream review is pending, not declined:
+Upstream status:
 
-  https://github.com/virtualsquare/vde-2/pull/74   the fixes and the man page
-  https://github.com/virtualsquare/vde-2/pull/75   the HOWTO
+  https://github.com/virtualsquare/vde-2/pull/74   commits 1 to 10, merged
+  https://github.com/virtualsquare/vde-2/pull/75   commit 11, approved
 
-If those land, this branch goes away and you should use upstream.  Until then
-this is here so the work is usable rather than sitting in a patch file.  The
-patches apply to upstream master with 'git am' if you would rather carry them
+Commit 12 came later and is not in a pull request yet.  Once both are
+upstream, this branch goes away and you should use upstream.  Until then it is
+here so the work is usable rather than sitting in a patch file.  The two
+commits apply to upstream master with 'git am' if you would rather carry them
 yourself.
 
-The branches fix/vde_router-forwarding-and-arp and doc/vde_router-howto hold
-commits 1 to 11 without this notice; those are what the pull requests point at.
-Commit 12 came later and is not in a pull request yet.
+The branch doc/vde_router-howto holds commit 11 without this notice; that is
+what pull request 75 points at.
 
 Build and use: see doc/vde_router-HOWTO, and vde_router(1).
 
